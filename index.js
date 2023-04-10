@@ -23,15 +23,36 @@ function handleClearForm() {
 //   createRecord();
 // }
 
-function downloadSingleSubjectFile(filename) {
+function downloadSingleSubjectConfigFile(filename) {
   console.log('filename: ', filename);
   const blob = new Blob([filename], { type: 'text/plain;charset=utf-8' });
   saveAs(blob, 'single-subject-config.txt');
 }
 
-function downloadSANFile(filename) {
+function downloadSANConfigFile(filename) {
   const blob = new Blob([filename], { type: 'text/plain;charset=utf-8' });
   saveAs(blob, 'san-config.txt');
+}
+
+function downloadSANScriptFile() {
+  const script = new Blob(
+    [
+      `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config san-config.txt`,
+    ],
+    { type: 'text/plain;charset=utf-8' }
+  );
+  saveAs(script, 'san-script.txt');
+}
+
+function downloadSingleSubjectScriptFile(cn) {
+  const script = new Blob(
+    [
+      // `openssl req -new -out ${cert_data.cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cert_data.cn}.key -config single-subject-config.txt`,
+      `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config single-subject-config.txt`,
+    ],
+    { type: 'text/plain;charset=utf-8' }
+  );
+  saveAs(script, 'single-script.txt');
 }
 
 function createRecord() {
@@ -59,17 +80,10 @@ function createRecord() {
   keyUsage = keyEncipherment, dataEncipherment
   extendedKeyUsage = serverAuth
   `;
-
-  const script = new Blob(
-    [
-      `openssl req -new -out ${cert_data.cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cert_data.cn}.key -config single-subject-config.txt`,
-    ],
-    { type: 'text/plain;charset=utf-8' }
-  );
-  saveAs(script, 'single-script.txt');
-  downloadSingleSubjectFile(record);
   const cn = cert_data.cn;
 
+  downloadSingleSubjectConfigFile(record);
+  downloadSingleSubjectScriptFile(cn);
   return { record, cn };
 }
 
@@ -116,15 +130,8 @@ function handleSanSubmit(e) {
   }
 
   const sanFile = record + altNames;
-  downloadSANFile(sanFile);
-
-  const script = new Blob(
-    [
-      `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config san-config.txt`,
-    ],
-    { type: 'text/plain;charset=utf-8' }
-  );
-  saveAs(script, 'san-script.txt');
+  downloadSANConfigFile(sanFile);
+  downloadSANScriptFile();
 
   console.log(sanFile);
 }
