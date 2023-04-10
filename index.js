@@ -1,28 +1,17 @@
-// const fs = require('fs');
-
 console.log('Hello');
 
 //* Form Event Listener
-// document.querySelector('#main-form').addEventListener('submit', handleSubmit);
-
 document.querySelector('#san-form').addEventListener('submit', handleSanSubmit);
 
 document
-  .querySelector('#clear-form')
-  .addEventListener('click', handleClearForm);
+  .querySelector('button#clear-form')
+  .addEventListener('click', document.location.reload);
 
+//* Get a reference to the form inputs
 const formInputs = Array.from(document.querySelectorAll('#main-form input'));
 const sanInputs = Array.from(document.querySelectorAll('#san-form input'));
 
-function handleClearForm() {
-  document.location.reload();
-}
-
-// function handleSubmit(e) {
-//   e.preventDefault();
-//   createRecord();
-// }
-
+//* The download functions
 function downloadSingleSubjectConfigFile(filename) {
   console.log('filename: ', filename);
   const blob = new Blob([filename], { type: 'text/plain;charset=utf-8' });
@@ -34,7 +23,7 @@ function downloadSANConfigFile(filename) {
   saveAs(blob, 'san-config.txt');
 }
 
-function downloadSANScriptFile() {
+function downloadSANScriptFile(cn) {
   const script = new Blob(
     [
       `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config san-config.txt`,
@@ -55,7 +44,9 @@ function downloadSingleSubjectScriptFile(cn) {
   saveAs(script, 'single-script.txt');
 }
 
-function createRecord() {
+//*
+
+function createRecord(hasSANData) {
   console.log('Form submitted');
   // const formInputs = Array.from(document.querySelectorAll('#main-form input'));
   // console.log(formInputs);
@@ -81,9 +72,10 @@ function createRecord() {
   extendedKeyUsage = serverAuth
   `;
   const cn = cert_data.cn;
-
-  downloadSingleSubjectConfigFile(record);
-  downloadSingleSubjectScriptFile(cn);
+  if (!hasSANData) {
+    downloadSingleSubjectConfigFile(record);
+    downloadSingleSubjectScriptFile(cn);
+  }
   return { record, cn };
 }
 
@@ -108,16 +100,20 @@ function addNextURL() {
 
 function handleSanSubmit(e) {
   e.preventDefault();
-  const sanInputs = Array.from(document.querySelectorAll('#san-form input'));
 
+  //* Get a reference to SAN URLs that user imputed
+  const sanInputs = Array.from(document.querySelectorAll('#san-form input'));
   const san_data = sanInputs.reduce(
     (acc, input) => ({ ...acc, [input.id]: input.value }),
     {}
   );
 
-  // need to add an if
+  let hasSANData = false;
+  if (sanInputs.length > 0) {
+    hasSANData = true;
+  }
 
-  const { record, cn } = createRecord();
+  const { record, cn } = createRecord(hasSANData);
 
   let altNames = `
   subjectAltName = @alt_names
@@ -129,9 +125,11 @@ function handleSanSubmit(e) {
     num += 1;
   }
 
-  const sanFile = record + altNames;
-  downloadSANConfigFile(sanFile);
-  downloadSANScriptFile();
-
-  console.log(sanFile);
+  //* Download SAN files only if a SAN URL is specified
+  if (hasSANData) {
+    const sanFile = record + altNames;
+    downloadSANConfigFile(sanFile);
+    downloadSANScriptFile(cn);
+    console.log(sanFile);
+  }
 }
