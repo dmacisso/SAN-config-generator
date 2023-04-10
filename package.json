@@ -1,0 +1,16 @@
+{
+  "name": "san-cert-generator",
+  "version": "1.0.0",
+  "description": "Generates SAN CSR",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "David Macisso",
+  "license": "ISC",
+  "dependencies": {
+    "node-openssl-cert": "^0.1.41",
+    "openssl": "^2.0.0"
+  }
+}
