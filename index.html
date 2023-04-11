@@ -4,54 +4,55 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>SAN CSR Generator</title>
   </head>
   <body>
-    <h1>SAN CSR Generator</h1>
-    <form id="main-form">
-      <div class="button-control">
-        <button id="clear-form">Reload Page</button>
-      </div>
-      <hr>
-      <div class="form-control">
-        <label for="country">Country:</label>
-        <input id="country" name="country" type="text" value="US" />
-      </div>
-      <div class="form-control">
-        <label for="state">State:</label>
-        <input id="state" name="state" type="text" value="Massachusetts" />
-      </div>
-      <div class="form-control">
-        <label for="city">City:</label>
-        <input id="city" name="city" type="text" value="Boston" />
-      </div>
-
-      <div class="form-control">
-        <label for="company_name">Company Name:</label>
-        <input
-          id="company_name"
-          name="company_name"
-          type="text"
-          value="Suffolk University"
-        />
-      </div>
-      <div class="form-control">
-        <label for="department">Department:</label>
-        <input id="department" name="department" type="text" value="ITS" />
-      </div>
-      <div class="form-control">
-        <label for="cn">Common Name:</label>
-        <input
-          id="cn"
-          name="cn"
-          type="text"
-          placeholder="Enter main url"
-        />
-      </div>
-    </form>
-    <!-- <hr /> -->
-    <form id="san-form" action="">
-      <!-- <div class="dns-input">
+    <header>
+      <h1>SAN CSR Generator</h1>
+      
+    </header>
+    <main>
+      <form id="main-form">
+        <div class="button-control">
+          <button id="clear-form">Reload Page</button>
+        </div>
+        
+        <div id="input-wrapper">
+          <div class="form-control">
+            <label for="country">Country:</label>
+            <input id="country" name="country" type="text" value="US" />
+          </div>
+          <div class="form-control">
+            <label for="state">State:</label>
+            <input id="state" name="state" type="text" value="Massachusetts" />
+          </div>
+          <div class="form-control">
+            <label for="city">City:</label>
+            <input id="city" name="city" type="text" value="Boston" />
+          </div>
+          <div class="form-control">
+            <label for="company_name">Company Name:</label>
+            <input
+              id="company_name"
+              name="company_name"
+              type="text"
+              value="Suffolk University"
+            />
+          </div>
+          <div class="form-control">
+            <label for="department">Department:</label>
+            <input id="department" name="department" type="text" value="ITS" />
+          </div>
+          <div class="form-control">
+            <label for="cn">Common Name:</label>
+            <input id="cn" name="cn" type="text" placeholder="Enter main url" />
+          </div>
+        </div>
+      </form>
+      <!-- <hr /> -->
+      <form id="san-form" action="">
+        <!-- <div class="dns-input">
         <label for="dns1">DNS1</label>
         <input
           type="text"
@@ -87,12 +88,16 @@
           name="dns4"
           placeholder="example4.suffolk.edu"
         /> -->
-      <!-- </div> -->
-      <div class="button-control">
-        <button id="dns-submit" type="submit">Submit</button>
-      </div>
-    </form>
-    <button onclick="addNextURL()">Add a SAN URL</button>
+        <!-- </div> -->
+        <div class="button-control">
+          <button id="dns-submit" type="submit">Submit</button>
+        </div>
+      </form>
+      <button onclick="addNextURL()">Add a SAN URL</button>
+    </main>
+    <footer>
+      &copy; David Macisso 2023
+    </footer>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"
       integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ=="

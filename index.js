@@ -1,6 +1,6 @@
 console.log('Hello');
 
-//* Form Event Listener
+//* FORM Event Listener
 document.querySelector('#san-form').addEventListener('submit', handleSanSubmit);
 
 document
@@ -79,6 +79,8 @@ function createRecord(hasSANData) {
   return { record, cn };
 }
 
+
+//* Add SAN URL's to the DOM
 function addNextURL() {
   // initialSanTable()
   const urls = document.querySelectorAll('.dns-input');
@@ -98,16 +100,18 @@ function addNextURL() {
   dnsSubmitButton.insertAdjacentElement('beforebegin', dnsInputDivElement);
 }
 
+
 function handleSanSubmit(e) {
   e.preventDefault();
 
-  //* Get a reference to SAN URLs that user imputed
+  //* Get a reference to SAN URLs resulting from user inputs
   const sanInputs = Array.from(document.querySelectorAll('#san-form input'));
   const san_data = sanInputs.reduce(
     (acc, input) => ({ ...acc, [input.id]: input.value }),
     {}
   );
 
+  //* Create a boolean testing for the existence of SAN URLs
   let hasSANData = false;
   if (sanInputs.length > 0) {
     hasSANData = true;
