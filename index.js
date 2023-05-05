@@ -44,6 +44,28 @@ function downloadSingleSubjectScriptFile(cn) {
   saveAs(script, 'single-script.txt');
 }
 
+function downloadCSROnlyForSANFromPrivateKey(cn) {
+  const script = new Blob(
+    [
+      `openssl req -out ${cn}.csr -key ${cn}.key -new -config san-config.txt`
+    ],
+    { type: 'text/plain;charset=utf-8' }
+  );
+  saveAs(script, 'csr-only-for-san-script.txt');
+  
+}
+
+function downloadCSROnlyForSingleFromPrivateKey(cn) {
+  const script = new Blob(
+    [
+      `openssl req -out ${cn}.csr -key ${cn}.key -new -config single-subject-config.txt`
+    ],
+    { type: 'text/plain;charset=utf-8' }
+  );
+  saveAs(script, 'csr-only-for-single-script.txt');
+  
+}
+
 //*
 
 function createRecord(hasSANData) {
@@ -75,6 +97,7 @@ function createRecord(hasSANData) {
   if (!hasSANData) {
     downloadSingleSubjectConfigFile(record);
     downloadSingleSubjectScriptFile(cn);
+    downloadCSROnlyForSingleFromPrivateKey(cn)
   }
   return { record, cn };
 }
@@ -134,6 +157,7 @@ function handleSanSubmit(e) {
     const sanFile = record + altNames;
     downloadSANConfigFile(sanFile);
     downloadSANScriptFile(cn);
+    downloadCSROnlyForSANFromPrivateKey(cn)
     console.log(sanFile);
   }
 }
