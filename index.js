@@ -15,18 +15,18 @@ const sanInputs = Array.from(document.querySelectorAll('#san-form input'));
 function downloadSingleSubjectConfigFile(filename) {
   console.log('filename: ', filename);
   const blob = new Blob([filename], { type: 'text/plain;charset=utf-8' });
-  saveAs(blob, 'single-subject-config.txt');
+  saveAs(blob, 'config.txt');
 }
 
 function downloadSANConfigFile(filename) {
   const blob = new Blob([filename], { type: 'text/plain;charset=utf-8' });
-  saveAs(blob, 'san-config.txt');
+  saveAs(blob, 'config.txt');
 }
 
 function downloadSANScriptFile(cn) {
   const script = new Blob(
     [
-      `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config san-config.txt`,
+      `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config config.txt`,
     ],
     { type: 'text/plain;charset=utf-8' }
   );
@@ -37,7 +37,7 @@ function downloadSingleSubjectScriptFile(cn) {
   const script = new Blob(
     [
       // `openssl req -new -out ${cert_data.cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cert_data.cn}.key -config single-subject-config.txt`,
-      `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config single-subject-config.txt`,
+      `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config config.txt`,
     ],
     { type: 'text/plain;charset=utf-8' }
   );
@@ -47,7 +47,7 @@ function downloadSingleSubjectScriptFile(cn) {
 function downloadCSROnlyForSANFromPrivateKey(cn) {
   const script = new Blob(
     [
-      `openssl req -out ${cn}.csr -key ${cn}.key -new -config san-config.txt`
+      `openssl req -out ${cn}.csr -key ${cn}.key -new -config config.txt`
     ],
     { type: 'text/plain;charset=utf-8' }
   );
@@ -58,7 +58,7 @@ function downloadCSROnlyForSANFromPrivateKey(cn) {
 function downloadCSROnlyForSingleFromPrivateKey(cn) {
   const script = new Blob(
     [
-      `openssl req -out ${cn}.csr -key ${cn}.key -new -config single-subject-config.txt`
+      `openssl req -out ${cn}.csr -key ${cn}.key -new -config config.txt`
     ],
     { type: 'text/plain;charset=utf-8' }
   );
