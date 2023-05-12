@@ -1,4 +1,6 @@
 console.log('Hello');
+//* reference to fields
+cnInputField = document.getElementById('cn');
 
 //* FORM Event Listener
 document.querySelector('#san-form').addEventListener('submit', handleSanSubmit);
@@ -12,61 +14,39 @@ const formInputs = Array.from(document.querySelectorAll('#main-form input'));
 const sanInputs = Array.from(document.querySelectorAll('#san-form input'));
 
 //* The download functions
-function downloadSingleSubjectConfigFile(filename) {
-  console.log('filename: ', filename);
+function downloadConfigFile(filename) {
   const blob = new Blob([filename], { type: 'text/plain;charset=utf-8' });
   saveAs(blob, 'config.txt');
 }
 
-function downloadSANConfigFile(filename) {
-  const blob = new Blob([filename], { type: 'text/plain;charset=utf-8' });
-  saveAs(blob, 'config.txt');
-}
-
-function downloadSANScriptFile(cn) {
+function downloadScriptForKeygenFile(cn) {
   const script = new Blob(
     [
       `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config config.txt`,
     ],
     { type: 'text/plain;charset=utf-8' }
   );
-  saveAs(script, 'san-script.txt');
+  saveAs(script, 'script-for-keygen.txt');
 }
 
-function downloadSingleSubjectScriptFile(cn) {
-  const script = new Blob(
-    [
-      // `openssl req -new -out ${cert_data.cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cert_data.cn}.key -config single-subject-config.txt`,
-      `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config config.txt`,
-    ],
-    { type: 'text/plain;charset=utf-8' }
-  );
-  saveAs(script, 'single-script.txt');
-}
+// function downloadSingleSubjectScriptFile(cn) {
+//   const script = new Blob(
+//     [
+//       // `openssl req -new -out ${cert_data.cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cert_data.cn}.key -config single-subject-config.txt`,
+//       `openssl req -new -out ${cn}.csr -newkey rsa:2048 -nodes -sha256 -keyout ${cn}.key -config config.txt`,
+//     ],
+//     { type: 'text/plain;charset=utf-8' }
+//   );
+//   saveAs(script, 'single-script.txt');
+// }
 
-function downloadCSROnlyForSANFromPrivateKey(cn) {
+function downloadCSROnlyFromPrivateKey(cn) {
   const script = new Blob(
-    [
-      `openssl req -out ${cn}.csr -key ${cn}.key -new -config config.txt`
-    ],
+    [`openssl req -out ${cn}.csr -key ${cn}.key -new -config config.txt`],
     { type: 'text/plain;charset=utf-8' }
   );
   saveAs(script, 'csr-only-for-san-script.txt');
-  
 }
-
-function downloadCSROnlyForSingleFromPrivateKey(cn) {
-  const script = new Blob(
-    [
-      `openssl req -out ${cn}.csr -key ${cn}.key -new -config config.txt`
-    ],
-    { type: 'text/plain;charset=utf-8' }
-  );
-  saveAs(script, 'csr-only-for-single-script.txt');
-  
-}
-
-//*
 
 function createRecord(hasSANData) {
   console.log('Form submitted');
@@ -94,18 +74,19 @@ function createRecord(hasSANData) {
   extendedKeyUsage = serverAuth
   `;
   const cn = cert_data.cn;
-  if (!hasSANData) {
-    downloadSingleSubjectConfigFile(record);
-    downloadSingleSubjectScriptFile(cn);
-    downloadCSROnlyForSingleFromPrivateKey(cn)
+
+  if (!cn) {
+    cnInputField.style.background = 'red';
+
+    alert('Please Enter the main URL in the common name field!');
+    return;
   }
-  return { record, cn };
-}
 
-
-//* Add SAN URL's to the DOM
-function addNextURL() {
-  // initialSanTable()
+  if (!hasSANData) {
+    downloadConfigFile(record);
+    downloadScriptForKeygenFile(cn);
+    downloadCSROnlyFromPrivateKey(cn);
+  }
   const urls = document.querySelectorAll('.dns-input');
   const dnsSubmitButton = document.querySelector('#dns-submit');
   const numUrls = urls.length;
@@ -122,7 +103,6 @@ function addNextURL() {
   dnsInputDivElement.innerHTML = newURL;
   dnsSubmitButton.insertAdjacentElement('beforebegin', dnsInputDivElement);
 }
-
 
 function handleSanSubmit(e) {
   e.preventDefault();
@@ -155,9 +135,9 @@ function handleSanSubmit(e) {
   //* Download SAN files only if a SAN URL is specified
   if (hasSANData) {
     const sanFile = record + altNames;
-    downloadSANConfigFile(sanFile);
-    downloadSANScriptFile(cn);
-    downloadCSROnlyForSANFromPrivateKey(cn)
+    downloadConfigFile(sanFile);
+    downloadScriptForKeygenFile(cn);
+    downloadCSROnlyFromPrivateKey(cn);
     console.log(sanFile);
   }
 }
